@@ -1,4 +1,4 @@
-import { type FC, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import Slider from '@mui/material/Slider';
 import type { Mark } from '@mui/base/useSlider';
 
@@ -36,6 +36,10 @@ const SliderComponent: FC<SliderComponentPropsI> = ({
   thresholdFromParent,
   setThresholdFromParent
 }) => {
+  // todo: think about optimizing or more clear decision
+  useEffect(() => {
+    setThresholdFromParent(threshold);
+  });
   const [threshold, setThreshold] =
     useState<number | Array<number>>(thresholdFromParent ?? 50);
 
