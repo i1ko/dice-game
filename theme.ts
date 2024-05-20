@@ -11,13 +11,14 @@ const roboto = Roboto({
 });
 
 const theme = createTheme({
+
   typography: {
     fontFamily: roboto.style.fontFamily,
     h1: {
       fontWeight: '300',
       color: '#000000DE',
       fontSize: 96
-    }
+    },
   },
   shape: {
     borderRadius: 2
@@ -63,6 +64,43 @@ const theme = createTheme({
             color: theme.palette.secondary
           }
         })
+      }
+    },
+    MuiCollapse: {
+      styleOverrides: {
+        wrapperInner: {
+          '&': {
+            display: 'flex',
+            justifyContent: 'center',
+          }
+        }
+      }
+    },
+    MuiAlert: {
+      styleOverrides: {
+        filled: {
+          // '&': {
+            color: 'white',
+            fontSize: '14px',
+            borderRadius: '4px',
+          // }
+        },
+        message: {
+          // '&': {
+            fontSize: '14px',
+          // }
+        },
+
+      },
+    },
+    MuiAlertTitle: {
+      styleOverrides: {
+        root: {
+          fontSize: 16,
+          // '&': {
+          //   fontSize: 16,
+          // }
+        }
       }
     }
   }

@@ -1,6 +1,6 @@
 'use client';
 
-import { type FC, useState, useRef, useEffect } from 'react';
+import { type FC, useState, useRef } from 'react';
 import {
   Button,
   FormControl,
@@ -10,7 +10,11 @@ import {
   Typography,
   Box,
   Container,
+  Collapse,
+  Alert,
+  AlertTitle,
   useTheme,
+  type AlertColor,
 } from '@mui/material';
 import SliderComponent from '@/components/slider';
 import TableComponent from '@/components/table';
@@ -24,16 +28,19 @@ const DiceGame: FC = () => {
   const theme = useTheme();
 
   let { current: thresholdRef } = useRef<number | Array<number>>(50);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const setThresholdRef = (value: number | Array<number>) =>
-    thresholdRef = value as number;
-  useEffect(() => {}, [thresholdRef]);
-  // const [thresholdState, setThresholdState] =
-  //   useState<number | Array<number>>(20);
+    thresholdRef = value;
 
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] =
+    useState<AlertColor>('success');
 
-  const [condition, setCondition] = useState<ConditionVariantsValueT>('greater');
-  const [playGameResultState, setPlayGameResultState] = useState<number | null>(null);
+  const [condition, setCondition] =
+    useState<ConditionVariantsValueT>(ConditionVariants.OVER);
+  const [playGameResultState, setPlayGameResultState] =
+    useState<number | null>(null);
   const [history, setHistory] =
     useState<Array<TableRowI>>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -41,9 +48,14 @@ const DiceGame: FC = () => {
 
   const playGame = () => {
     const rollResult = Math.floor(Math.random() * 100) + 1;
-    const win = condition === 'greater'
+    const isPredictOver = condition === ConditionVariants.OVER;
+    const isPredictUnder = condition === ConditionVariants.UNDER;
+    const win = isPredictOver
       ? rollResult > Number(thresholdRef)
-      : rollResult < Number(thresholdRef);
+      : isPredictUnder
+        ? rollResult < Number(thresholdRef)
+        : null
+    ;
 
     setPlayGameResultState(rollResult);
     playGameResultRef = rollResult;
@@ -51,9 +63,11 @@ const DiceGame: FC = () => {
     setHistory(prevHistory => {
       const newHistory = [{
         time: new Date,
-        guess: condition === ConditionVariants.GREATER
-          ? 'Over'
-          : 'Under'
+        guess: isPredictOver
+          ? ConditionVariants.OVER
+          : isPredictUnder
+            ? ConditionVariants.UNDER
+            : null
         ,
         order: thresholdRef as number,
         result: rollResult,
@@ -66,8 +80,16 @@ const DiceGame: FC = () => {
       return newHistory.slice(0, 10);
     });
 
-    setThresholdRef(rollResult);
-    // setThresholdState(rollResult);
+    setAlertTitle(win ? 'You won' : 'You lost');
+    setAlertMessage(
+      win
+        ? ''
+        : isPredictOver
+          ? 'Number was smaller'
+          : 'Number was higher'
+    );
+    setAlertSeverity(win ? 'success' : 'error');
+    setAlertOpen(true);
   };
 
   const RadioComponent = <Radio color="secondary" />;
@@ -91,6 +113,21 @@ const DiceGame: FC = () => {
           alignContent="center"
           flexDirection="column"
         >
+          <Collapse in={alertOpen}>
+            <Alert
+              variant="filled"
+              severity={alertSeverity}
+              onClose={() => setAlertOpen(false)}
+              sx={{
+                position: 'absolute',
+                top: 16,
+                width: 600
+              }}
+            >
+              <AlertTitle>{alertTitle}</AlertTitle>
+              {alertMessage}
+            </Alert>
+          </Collapse>
           <Box
             sx={{
               // todo: double-check about (I guess it possible) do it in more pretty way
@@ -122,15 +159,13 @@ const DiceGame: FC = () => {
             >
               <FormControlLabel
                 control={RadioComponent}
-                // todo: we can use constant for value
-                value="greater"
-                label="Greater"
+                value={ConditionVariants.OVER}
+                label={ConditionVariants.OVER}
               />
               <FormControlLabel
                 control={RadioComponent}
-                // todo: we can use constant for value
-                value="less"
-                label="Less"
+                value={ConditionVariants.UNDER}
+                label={ConditionVariants.UNDER}
               />
             </RadioGroup>
             <SliderComponent
