@@ -2,16 +2,23 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, run install the dependencies with the correct Node.js version. For that at first you need to verify your Node.js version and install correct one specified in [nvm-file](./.nvmrc). I do it via nvm-tool every time:
+```bash
+nvm use
+```
+Then you can install packages:
+```bash
+npm install
+# or
+yarn
+```
+
+Then run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
