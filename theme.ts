@@ -13,6 +13,11 @@ const roboto = Roboto({
 const theme = createTheme({
   typography: {
     fontFamily: roboto.style.fontFamily,
+    h1: {
+      fontWeight: '300',
+      color: '#000000DE',
+      fontSize: 96
+    }
   },
   shape: {
     borderRadius: 2
@@ -37,6 +42,30 @@ const theme = createTheme({
       dark: '#C62828'
     },
   },
+  components: {
+    MuiSlider: {
+      styleOverrides: {
+        root: {
+          padding: "20px 0",
+        },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        markLabel: ({_, theme}) => {
+          return {
+            '&': {
+              position: 'relative',
+              color: theme.palette.text.secondary,
+            },
+          };
+        },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        markLabelActive: ({_, theme}) => ({
+          '&': {
+            color: theme.palette.secondary
+          }
+        })
+      }
+    }
+  }
 });
 
 export default theme;
